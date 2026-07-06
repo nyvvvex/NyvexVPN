@@ -5,8 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
 
       - name: set up JDK 17
         uses: actions/setup-java@v4
@@ -15,13 +13,14 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Build APK via Tools
-        run: |
-          chmod +x tools/build.sh
-          ./tools/build.sh
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build APK
+        run: ./gradlew assembleDebug --no-daemon
 
       - name: Upload Finished APK
         uses: actions/upload-artifact@v4
         with:
-          name: NyvexVPN-Official
+          name: NyvexVPN-debug
           path: "**/build/outputs/apk/**/*.apk"
